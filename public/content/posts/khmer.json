@@ -1,0 +1,18 @@
+{
+  "title": "ភាសាខ្មែរនៅលើ Telegram",
+  "description": "អត្ថបទសាកល្បងខ្លីមួយ ដើម្បីមើលថាតំណដែលទើបបោះពុម្ព បង្ហាញការមើលជាមុនជាភាសាខ្មែរបានភ្លាមៗលើ Telegram។",
+  "date": "2026-11-26",
+  "lang": "km",
+  "tags": ["telegram", "khmer"],
+  "accent": "#10B981",
+  "blocks": [
+    { "type": "p", "text": "សួស្តី! នេះជាអត្ថបទសាកល្បងទីបី សម្រាប់ពិនិត្យការមើលជាមុនតំណភ្ជាប់ជា **ភាសាខ្មែរ** នៅលើ Telegram។" },
+    { "type": "h2", "text": "ចំណុចសំខាន់" },
+    { "type": "list", "items": [
+      "ខ្លឹមសារត្រូវបានផ្ទុកពីឯកសារ JSON",
+      "ទំព័រត្រូវបានបង្កើតនៅលើម៉ាស៊ីនមេ ដូច្នេះ Telegram ឃើញស្លាកទាំងអស់",
+      "រូបភាពមើលជាមុនត្រូវបានបង្កើតដោយស្វ័យប្រវត្តិ"
+    ] },
+    { "type": "callout", "tone": "success", "title": "Tip", "text": "Share with the **Share on Telegram** button: its versioned link is always new to Telegram, so the card appears immediately." }
+  ]
+}
