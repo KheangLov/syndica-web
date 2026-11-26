@@ -1,0 +1,25 @@
+{
+  "slug": "json-powered-blog",
+  "title": "Writing posts for this blog",
+  "description": "Every post is one JSON file. Add a file, push, and the post appears with its own share preview.",
+  "date": "2026-11-15",
+  "tags": ["guide"],
+  "accent": "#10B981",
+  "blocks": [
+    { "type": "p", "text": "There's no CMS and no database. Each post is a single file in `public/content/posts/`, named after its slug." },
+    { "type": "code", "lang": "json", "code": "{\n  \"slug\": \"my-first-post\",\n  \"title\": \"My first post\",\n  \"description\": \"One or two sentences for the preview.\",\n  \"date\": \"2026-11-26\",\n  \"tags\": [\"telegram\"],\n  \"cover\": \"/images/covers/my-cover.png\",\n  \"blocks\": [\n    { \"type\": \"p\", \"text\": \"Hello **world**.\" }\n  ]\n}" },
+    { "type": "h2", "text": "Block types" },
+    { "type": "list", "items": [
+      "`p` — paragraph with **bold**, *italic*, `code` and [links](https://example.com)",
+      "`h2`, `h3` — headings",
+      "`list` — bullet list, or numbered with `\"ordered\": true`",
+      "`quote` — pull quote with an optional `cite`",
+      "`code` — code block with a `lang` label",
+      "`image` — `src`, `alt` and optional `caption`",
+      "`callout` — `tone` of info, success or warning",
+      "`divider` — a horizontal rule"
+    ] },
+    { "type": "callout", "tone": "info", "title": "No cover? No problem", "text": "Leave out `cover` and the build draws a preview image from the title, tags and `accent` colour." },
+    { "type": "p", "text": "Set `\"draft\": true` to keep a post out of the list and the build until it's ready." }
+  ]
+}

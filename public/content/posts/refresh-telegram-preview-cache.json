@@ -1,0 +1,20 @@
+{
+  "slug": "refresh-telegram-preview-cache",
+  "title": "Refreshing a stale Telegram preview",
+  "description": "Changed your image or title but Telegram still shows the old card? Here's how to force it to fetch the page again.",
+  "date": "2026-11-18",
+  "tags": ["telegram", "debugging"],
+  "accent": "#7C5CFF",
+  "blocks": [
+    { "type": "p", "text": "Telegram caches previews per URL. After you fix a title or image, chats will keep showing the old version until the cache is refreshed." },
+    { "type": "h2", "text": "Use @WebpageBot" },
+    { "type": "list", "ordered": true, "items": [
+      "Open [@WebpageBot](https://t.me/WebpageBot) in Telegram.",
+      "Send it the exact URL you want refreshed (up to 10 per message).",
+      "The bot replies with the new preview. New shares will use it."
+    ] },
+    { "type": "callout", "tone": "success", "title": "Quick workaround", "text": "While testing, add a throwaway query string like `?v=2`. Telegram treats it as a new URL and fetches it fresh." },
+    { "type": "h3", "text": "Still old?" },
+    { "type": "p", "text": "Check that your host isn't serving a cached HTML file, and that the image URL itself changed or was re-uploaded. Telegram caches images separately from pages." }
+  ]
+}

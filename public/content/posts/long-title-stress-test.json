@@ -1,0 +1,13 @@
+{
+  "slug": "long-title-stress-test",
+  "title": "This is a deliberately long post title that keeps going well past the length most platforms are happy to show in a preview",
+  "description": "A stress test for truncation. The title and this description are both longer than recommended, so you can see where Telegram, X, Facebook and LinkedIn each decide to cut the text off and add an ellipsis instead of showing everything you wrote here.",
+  "date": "2026-11-08",
+  "tags": ["testing"],
+  "accent": "#EF4444",
+  "blocks": [
+    { "type": "p", "text": "Share this post and compare platforms. The Share lab will flag both the title and description as too long, which is the point." },
+    { "type": "divider" },
+    { "type": "p", "text": "The generated preview image shrinks the font for long titles and clamps it to four lines, so the image stays readable even when the text isn't." }
+  ]
+}

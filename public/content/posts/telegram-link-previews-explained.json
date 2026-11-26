@@ -1,0 +1,28 @@
+{
+  "slug": "telegram-link-previews-explained",
+  "title": "How Telegram builds a link preview",
+  "description": "What Telegram's preview bot reads from your page, why single-page apps often show a blank card, and how this blog fixes it.",
+  "date": "2026-11-24",
+  "tags": ["telegram", "open-graph"],
+  "cover": "/images/covers/telegram-previews.png",
+  "coverAlt": "Abstract blue gradient with a paper-plane shape",
+  "featured": true,
+  "blocks": [
+    { "type": "p", "text": "Paste a link into a Telegram chat and, a second later, a card appears under it: a site name, a bold title, a line or two of text and usually an image. That card is built by Telegram's servers, not by your phone, and it's built from a handful of tags in your page's `<head>`." },
+    { "type": "h2", "text": "What the bot reads" },
+    { "type": "p", "text": "Telegram fetches the URL once and looks for **Open Graph** tags first, then falls back to Twitter card tags and finally to the plain `<title>` and `description`." },
+    { "type": "list", "items": [
+      "`og:site_name` — the small coloured line at the top of the card",
+      "`og:title` — the bold headline",
+      "`og:description` — up to a few lines of body text",
+      "`og:image` — the picture; large images (about 1200×630) get the big layout",
+      "`twitter:card = summary_large_image` — nudges some clients toward the large image"
+    ] },
+    { "type": "callout", "tone": "warning", "title": "The SPA trap", "text": "Telegram's bot does not run JavaScript. If your page sets its title and meta tags from Vue or React after loading, the bot only ever sees the empty shell, so every post shares the same generic card." },
+    { "type": "h2", "text": "How this blog handles it" },
+    { "type": "p", "text": "Posts live in JSON files and the app loads them in the browser. At build time, a small Vite plugin reads the same JSON and writes a static `index.html` for every post with the right tags already in place. It also draws a 1200×630 preview image for posts that don't have a cover." },
+    { "type": "code", "lang": "html", "code": "<meta property=\"og:title\" content=\"How Telegram builds a link preview\">\n<meta property=\"og:image\" content=\"https://example.com/og/telegram-link-previews-explained.png\">\n<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"630\">" },
+    { "type": "quote", "text": "If the bot can't see it in the HTML response, it doesn't exist.", "cite": "Every social preview, ever" },
+    { "type": "p", "text": "Open the **Share lab** from the top bar to see exactly what Telegram will read for any post on this site." }
+  ]
+}

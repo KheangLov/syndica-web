@@ -1,0 +1,23 @@
+{
+  "slug": "open-graph-checklist",
+  "title": "A practical Open Graph checklist",
+  "description": "Eight things to check before you share a link, so the preview looks right on Telegram, X, Facebook and LinkedIn.",
+  "date": "2026-11-20",
+  "tags": ["open-graph", "checklist"],
+  "blocks": [
+    { "type": "p", "text": "Most broken previews come from the same few mistakes. Run through this list before you post a link anywhere." },
+    { "type": "list", "ordered": true, "items": [
+      "**Absolute URLs.** `og:image` and `og:url` must start with `https://`. Relative paths are ignored.",
+      "**Image size.** Use 1200×630 PNG or JPEG. SVG and WebP aren't safe everywhere.",
+      "**Image weight.** Keep it under about 5 MB; smaller loads faster in chats.",
+      "**Title length.** Aim for 40–60 characters. Telegram wraps, X truncates.",
+      "**Description length.** 110–160 characters reads well on every platform.",
+      "**One canonical URL.** Match `og:url` and `<link rel=\"canonical\">`.",
+      "**Server-rendered tags.** Bots don't execute JavaScript.",
+      "**Cache-busting.** Platforms cache previews; plan how to refresh them."
+    ] },
+    { "type": "callout", "tone": "info", "title": "Tip", "text": "This blog's Share lab checks all of these automatically for each post." },
+    { "type": "h2", "text": "Platform quirks" },
+    { "type": "p", "text": "Telegram shows a large image only when it's wide enough; small or square images become a thumbnail on the right. X needs `twitter:card` to pick the large layout. LinkedIn caches aggressively and has its own Post Inspector to refresh." }
+  ]
+}

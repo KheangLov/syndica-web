@@ -1,0 +1,15 @@
+{
+  "name": "Syndica",
+  "tagline": "Notes on sharing, previews and the open web",
+  "description": "A small blog for testing how posts look when they're shared on Telegram and other social apps.",
+  "locale": "en_US",
+  "author": {
+    "name": "Kheang Lov",
+    "avatar": "",
+    "telegram": "kheanglov"
+  },
+  "telegramChannel": "",
+  "twitter": "",
+  "accent": "#2AABEE",
+  "defaultImage": "/og/default.png"
+}

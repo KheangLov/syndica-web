@@ -1,0 +1,19 @@
+{
+  "slug": "khmer-preview-test",
+  "title": "សាកល្បងការចែករំលែកតំណភ្ជាប់លើ Telegram",
+  "description": "អត្ថបទសាកល្បង ដើម្បីពិនិត្យមើលថា អក្សរខ្មែរបង្ហាញបានត្រឹមត្រូវ នៅក្នុងការមើលជាមុនរបស់ Telegram។",
+  "date": "2026-11-12",
+  "lang": "km",
+  "tags": ["telegram", "khmer"],
+  "accent": "#F59E0B",
+  "blocks": [
+    { "type": "p", "text": "អត្ថបទនេះប្រើសម្រាប់សាកល្បង **អក្សរខ្មែរ** នៅក្នុងចំណងជើង ការពិពណ៌នា និងរូបភាពមើលជាមុន។" },
+    { "type": "h2", "text": "អ្វីដែលត្រូវពិនិត្យ" },
+    { "type": "list", "items": [
+      "ចំណងជើងបង្ហាញពេញលេញ មិនខូចអក្សរ",
+      "ការពិពណ៌នាអានបានស្រួល",
+      "រូបភាពមើលជាមុនប្រើពុម្ពអក្សរខ្មែរ"
+    ] },
+    { "type": "callout", "tone": "info", "title": "Why this post exists", "text": "Non-Latin scripts are a common place for previews to break: wrong fonts in generated images, cut-off titles, or mangled encoding. Share this one to check all three." }
+  ]
+}
