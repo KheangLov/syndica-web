@@ -57,7 +57,7 @@ const related = computed(() => {
 
       <header class="article__head">
         <div class="article__tags">
-          <SqChip v-for="t in post.data.tags" :key="t" :to="{ path: '/', query: { tag: t } }" size="small" rounded="pill" link>#{{ t }}</SqChip>
+          <RouterLink v-for="t in post.data.tags" :key="t" :to="`/tags/${encodeURIComponent(t)}/`" class="tag-link"><SqChip size="small" rounded="pill" link>#{{ t }}</SqChip></RouterLink>
         </div>
         <h1 class="article__title">{{ post.data.title }}</h1>
         <p class="article__lead">{{ post.data.description }}</p>
@@ -85,7 +85,7 @@ const related = computed(() => {
           <p class="muted">Send it to a chat or channel and see how the preview looks.</p>
         </div>
         <ShareBar :url="url" :title="post.data.title" />
-        <SqBtn :to="{ path: '/share', query: { post: post.data.slug } }" variant="text" size="small" :prepend-icon="icons.flask" class="share-box__lab">
+        <SqBtn :to="`/share/${post.data.slug}/`" variant="text" size="small" :prepend-icon="icons.flask" class="share-box__lab">
           Inspect this post’s preview in the Share lab
         </SqBtn>
       </SqSheet>
@@ -106,6 +106,7 @@ const related = computed(() => {
 .article { max-width: var(--prose-max); margin: 0 auto; padding-top: 12px; }
 .back { margin-left: -10px; margin-bottom: 20px; }
 .article__tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag-link { text-decoration: none; }
 .article__title { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.035em; margin: 16px 0 14px; font-weight: 750; text-wrap: balance; }
 .article__title:lang(km) { line-height: 1.45; letter-spacing: 0; }
 .article__lead { font-size: 1.2rem; line-height: 1.55; color: var(--sq-on-surface-variant); margin: 0 0 22px; }

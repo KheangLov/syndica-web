@@ -123,7 +123,10 @@ export default function social() {
       if (post) return { path: `posts/${post.slug}/`, post }
       return { path: '404.html', title: 'Not found', noindex: true }
     }
-    if (p === '/share') return { path: 'share/', title: 'Share lab', description: 'See exactly what Telegram and other apps read when this blog is shared.' }
+    if (/^\/share(\/[^/]+)?$/.test(p)) return { path: p.slice(1) + '/', title: 'Share lab', description: 'See exactly what Telegram and other apps read when this blog is shared.' }
+    const t = p.match(/^\/tags\/([^/]+)$/)
+    if (t && data.posts.some((x) => x.tags.includes(t[1])))
+      return { path: `tags/${encodeURIComponent(t[1])}/`, title: `#${t[1]}`, description: `Posts tagged #${t[1]} on ${data.site.name}.` }
     return { path: '', home: true }
   }
 
@@ -144,7 +147,7 @@ export default function social() {
   }
 
   const sitemap = ({ posts }) =>
-    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${esc(abs(''))}</loc></url>${posts.map((p) => `<url><loc>${esc(abs(`posts/${p.slug}/`))}</loc><lastmod>${p.updated || p.date}</lastmod></url>`).join('')}</urlset>`
+    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${esc(abs(''))}</loc></url>${posts.map((p) => `<url><loc>${esc(abs(`posts/${p.slug}/`))}</loc><lastmod>${p.updated || p.date}</lastmod></url>`).join('')}${[...new Set(posts.flatMap((p) => p.tags))].map((t) => `<url><loc>${esc(abs(`tags/${t}/`))}</loc></url>`).join('')}</urlset>`
 
   const indexJson = ({ site, posts }) => JSON.stringify({ generatedAt: new Date().toISOString(), shareBaseUrl: site.shareBaseUrl || '', posts: posts.map(summarize) })
 
@@ -220,7 +223,12 @@ export default function social() {
       write('index.html', render(template, { path: '', home: true }, data))
       write('share/index.html', render(template, routeFor(base + 'share', data), data))
       write('404.html', render(template, { path: '404.html', title: 'Not found', noindex: true }, data))
-      for (const post of data.posts) write(`posts/${post.slug}/index.html`, render(template, { path: `posts/${post.slug}/`, post }, data))
+      for (const post of data.posts) {
+        write(`posts/${post.slug}/index.html`, render(template, { path: `posts/${post.slug}/`, post }, data))
+        write(`share/${post.slug}/index.html`, render(template, routeFor(`${base}share/${post.slug}`, data), data))
+      }
+      for (const tag of new Set(data.posts.flatMap((p) => p.tags)))
+        write(`tags/${tag}/index.html`, render(template, routeFor(`${base}tags/${tag}`, data), data))
 
       write('content/posts.json', indexJson(data))
       write('feed.xml', feed(data))

@@ -25,10 +25,3 @@ export async function copyText(text) {
 }
 
 export const canNativeShare = () => typeof navigator !== 'undefined' && !!navigator.share
-
-/** Add a cache-busting query so Telegram fetches a fresh preview. */
-export const withVersion = (url) => {
-  const u = new URL(url)
-  u.searchParams.set('v', Date.now().toString(36).slice(-5))
-  return u.href
-}

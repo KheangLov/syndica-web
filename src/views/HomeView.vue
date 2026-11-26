@@ -1,27 +1,26 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import PostCard from '../components/PostCard.vue'
 import { getPosts, getSite, setTitle, useAsync } from '../lib/content.js'
 import { icons } from '../lib/icons.js'
 
-const route = useRoute()
+const props = defineProps({ tag: { type: String, default: null } })
 const router = useRouter()
 const posts = useAsync(getPosts)
 const site = ref(null)
 
-const query = ref(route.query.q?.toString() || '')
-const tag = ref(route.query.tag?.toString() || null)
+// Search stays on the page; tag filters are real paths (/tags/<tag>/) — no query strings.
+const query = ref('')
+const tag = computed({
+  get: () => props.tag || null,
+  set: (t) => router.push(t ? `/tags/${encodeURIComponent(t)}/` : '/'),
+})
 
 onMounted(async () => {
   posts.run()
   site.value = await getSite().catch(() => null)
-  setTitle('', site.value?.name)
-})
-
-// Keep filters in the URL so filtered views are shareable too.
-watch([query, tag], ([q, t]) => {
-  router.replace({ query: { ...(q ? { q } : {}), ...(t ? { tag: t } : {}) } })
+  setTitle(props.tag ? `#${props.tag}` : '', site.value?.name)
 })
 
 const allTags = computed(() => {
@@ -42,7 +41,7 @@ const isFiltering = computed(() => !!query.value.trim() || !!tag.value)
 const featured = computed(() => (isFiltering.value ? null : filtered.value.find((p) => p.featured) || filtered.value[0]))
 const rest = computed(() => filtered.value.filter((p) => p !== featured.value))
 
-function reset() { query.value = ''; tag.value = null }
+function reset() { query.value = ''; if (props.tag) tag.value = null }
 </script>
 
 <template>
@@ -103,7 +102,7 @@ function reset() { query.value = ''; tag.value = null }
         <h2 class="section-title">Testing a share?</h2>
         <p class="muted">The Share lab shows the exact tags Telegram reads for each post, a live preview, and a checklist.</p>
       </div>
-      <SqBtn to="/share" :append-icon="icons.arrowRight" color="primary">Open Share lab</SqBtn>
+      <SqBtn to="/share/" :append-icon="icons.arrowRight" color="primary">Open Share lab</SqBtn>
     </SqSheet>
   </div>
 </template>

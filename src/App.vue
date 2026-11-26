@@ -30,7 +30,7 @@ const year = new Date().getFullYear()
       <template #append>
         <nav class="nav">
           <SqBtn variant="text" to="/" size="small" class="nav__btn">Posts</SqBtn>
-          <SqBtn variant="tonal" to="/share" size="small" :prepend-icon="icons.flask">Share lab</SqBtn>
+          <SqBtn variant="tonal" to="/share/" size="small" :prepend-icon="icons.flask">Share lab</SqBtn>
           <SqTooltip :text="isDark ? 'Light mode' : 'Dark mode'" location="bottom">
             <SqBtn variant="text" size="small" :icon="isDark ? 'sun' : 'moon'" :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'" @click="toggleTheme" />
           </SqTooltip>

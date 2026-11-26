@@ -5,7 +5,7 @@ A small Vue 3 blog for testing how links look when they're shared on **Telegram*
 - **Posts are JSON files.** The app loads them in the browser at runtime. There's no CMS and no database.
 - **Previews work without JavaScript.** Telegram's preview bot doesn't run JS, so the build writes a static `index.html` for every post with its Open Graph and Twitter tags already in place.
 - **Preview images are generated.** Any post without a `cover` gets a 1200×630 PNG drawn from its title, tags and accent colour. Khmer and other non-Latin scripts are supported.
-- **Share lab** (`/share`) fetches a page's raw HTML, which is exactly what Telegram receives. It shows a mock of the Telegram chat preview, runs a checklist (title and description length, image size, absolute URLs, localhost leaks…) and links to `@WebpageBot` so you can refresh Telegram's cache.
+- **Share lab** (`/share/<slug>/`) fetches a page's raw HTML, which is exactly what Telegram receives. It shows a mock of the Telegram chat preview, runs a checklist (title and description length, image size, absolute URLs, localhost leaks…) and links to `@WebpageBot` so you can refresh Telegram's cache.
 - The build also writes an RSS feed (`feed.xml`), `sitemap.xml`, `robots.txt` and JSON-LD.
 
 ## Develop
@@ -63,4 +63,4 @@ Without `SITE_URL`, the tags point at localhost and Telegram can't fetch them. T
 ## Testing on Telegram
 
 1. Open a post and tap **Share on Telegram**, or paste its URL into any chat.
-2. If you've changed something, send the URL to [@WebpageBot](https://t.me/WebpageBot) to refresh Telegram's cache. You can also use **Copy cache-busted URL** in the Share lab, which adds `?v=…`.
+2. With `SHARE_BASE_URL` set (see syndica-link), share buttons hand out `/posts/<slug>/<version>` links. The version changes whenever a post changes, so Telegram always fetches a fresh preview. Without it, send the URL to [@WebpageBot](https://t.me/WebpageBot) to refresh Telegram's cache.

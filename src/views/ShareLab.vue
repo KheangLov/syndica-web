@@ -1,19 +1,19 @@
 <script setup>
 import { computed, inject, onMounted, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import TelegramPreview from '../components/TelegramPreview.vue'
 import ShareBar from '../components/ShareBar.vue'
 import { getPosts, pageUrl, setTitle, shareUrlFor } from '../lib/content.js'
 import { fetchMeta, probeImage, runChecks } from '../lib/meta.js'
-import { copyText, withVersion } from '../lib/share.js'
+import { copyText } from '../lib/share.js'
 import { icons } from '../lib/icons.js'
 
-const route = useRoute()
+const props = defineProps({ slug: { type: String, default: '' } })
 const router = useRouter()
 const toast = inject('toast', () => {})
 
 const posts = ref([])
-const target = ref(route.query.post?.toString() || '')
+const target = ref(props.slug || '')
 const meta = ref(null)
 const checks = ref([])
 const loading = ref(false)
@@ -56,19 +56,19 @@ async function inspect() {
 }
 
 watch(target, (slug) => {
-  router.replace({ query: slug ? { post: slug } : {} })
+  router.replace(slug ? `/share/${slug}/` : '/share/')
   inspect()
 })
 
 onMounted(async () => {
   setTitle('Share lab')
   posts.value = await getPosts().catch(() => [])
-  if (!target.value && route.query.post === undefined && posts.value[0]) target.value = posts.value[0].slug
+  if (!target.value && posts.value[0]) target.value = posts.value[0].slug
   else inspect()
 })
 
-async function copyBusted() {
-  if (await copyText(withVersion(liveUrl.value))) toast('Fresh URL copied — paste it in Telegram')
+async function copyShare() {
+  if (await copyText(viaLink.value ? shareLink.value : liveUrl.value)) toast('Share link copied — paste it in Telegram')
 }
 </script>
 
@@ -97,7 +97,7 @@ async function copyBusted() {
           <SqDivider />
           <div class="panel__tools">
             <SqBtn variant="tonal" size="small" :prepend-icon="icons.bot" href="https://t.me/WebpageBot" target="_blank" rel="noopener">Refresh via @WebpageBot</SqBtn>
-            <SqBtn variant="tonal" size="small" prepend-icon="copy" @click="copyBusted">Copy cache-busted URL</SqBtn>
+            <SqBtn variant="tonal" size="small" prepend-icon="copy" @click="copyShare">Copy share link</SqBtn>
             <SqBtn variant="text" size="small" prepend-icon="refresh" :loading="loading" @click="inspect">Re-check</SqBtn>
           </div>
         </SqSheet>
