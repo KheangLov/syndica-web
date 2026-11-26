@@ -30,7 +30,8 @@ export default function social() {
     const title = post ? `${post.title} · ${site.name}` : route.title ? `${route.title} · ${site.name}` : `${site.name} — ${site.tagline}`
     const ogTitle = post ? post.title : route.title || site.name
     const description = post ? post.description : route.description || site.description
-    const url = abs(route.path)
+    // With syndica-link configured, it is the canonical home of each post (one URL for SEO and shares).
+    const url = post && site.shareBaseUrl ? `${site.shareBaseUrl}/posts/${post.slug}` : abs(route.path)
     const image = post ? post.image : site.defaultImage
     const imageAlt = post ? post.imageAlt : `${site.name} — ${site.tagline}`
     const size = post && !post.generatedImage ? imageSize(path.join(publicDir, post.image)) : { width: 1200, height: 630, type: 'image/png' }
@@ -145,7 +146,7 @@ export default function social() {
   const sitemap = ({ posts }) =>
     `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${esc(abs(''))}</loc></url>${posts.map((p) => `<url><loc>${esc(abs(`posts/${p.slug}/`))}</loc><lastmod>${p.updated || p.date}</lastmod></url>`).join('')}</urlset>`
 
-  const indexJson = ({ posts }) => JSON.stringify({ generatedAt: new Date().toISOString(), posts: posts.map(summarize) })
+  const indexJson = ({ site, posts }) => JSON.stringify({ generatedAt: new Date().toISOString(), shareBaseUrl: site.shareBaseUrl || '', posts: posts.map(summarize) })
 
   return {
     name: 'syndica-social',

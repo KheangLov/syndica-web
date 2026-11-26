@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import BlockRenderer from '../components/BlockRenderer.vue'
 import ShareBar from '../components/ShareBar.vue'
 import PostCard from '../components/PostCard.vue'
-import { asset, formatDate, getPost, getPosts, getSite, pageUrl, setTitle, useAsync } from '../lib/content.js'
+import { asset, formatDate, getPost, getPosts, getSite, pageUrl, setTitle, shareUrlFor, useAsync } from '../lib/content.js'
 import { icons } from '../lib/icons.js'
 
 const props = defineProps({ slug: { type: String, required: true } })
@@ -11,18 +11,20 @@ const props = defineProps({ slug: { type: String, required: true } })
 const post = useAsync(getPost)
 const all = ref([])
 const site = ref(null)
+const shared = ref('')
 
 watch(
   () => props.slug,
   async (slug) => {
     await post.run(slug)
     ;[all.value, site.value] = await Promise.all([getPosts().catch(() => []), getSite().catch(() => null)])
+    if (post.data) shared.value = await shareUrlFor(post.data).catch(() => '')
     setTitle(post.data?.title || 'Not found', site.value?.name)
   },
   { immediate: true },
 )
 
-const url = computed(() => pageUrl(`posts/${props.slug}/`))
+const url = computed(() => shared.value || pageUrl(`posts/${props.slug}/`))
 const related = computed(() => {
   const p = post.data
   if (!p) return []

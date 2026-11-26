@@ -3,7 +3,7 @@ import { computed, inject, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import TelegramPreview from '../components/TelegramPreview.vue'
 import ShareBar from '../components/ShareBar.vue'
-import { getPosts, pageUrl, setTitle } from '../lib/content.js'
+import { getPosts, pageUrl, setTitle, shareUrlFor } from '../lib/content.js'
 import { fetchMeta, probeImage, runChecks } from '../lib/meta.js'
 import { copyText, withVersion } from '../lib/share.js'
 import { icons } from '../lib/icons.js'
@@ -27,6 +27,12 @@ const options = computed(() => [
 ])
 const path = computed(() => (target.value ? `posts/${target.value}/` : ''))
 const liveUrl = computed(() => pageUrl(path.value))
+const shareLink = ref('')
+watch([target, posts], async () => {
+  const p = posts.value.find((x) => x.slug === target.value)
+  shareLink.value = p ? await shareUrlFor(p).catch(() => '') : ''
+}, { immediate: true })
+const viaLink = computed(() => shareLink.value && !shareLink.value.startsWith(location.origin))
 const score = computed(() => {
   const c = checks.value
   return { pass: c.filter((x) => x.status === 'pass').length, warn: c.filter((x) => x.status === 'warn').length, fail: c.filter((x) => x.status === 'fail').length }
@@ -83,7 +89,11 @@ async function copyBusted() {
             <SqIcon :icon="icons.link" size="small" class="muted" />
             <a :href="liveUrl" target="_blank" rel="noopener">{{ liveUrl }}</a>
           </div>
-          <ShareBar :url="liveUrl" :title="meta?.title || ''" compact />
+          <SqAlert v-if="viaLink" type="info" variant="tonal" class="via">
+            Share buttons use the always-fresh syndica-link URL:
+            <a :href="shareLink" target="_blank" rel="noopener">{{ shareLink }}</a>
+          </SqAlert>
+          <ShareBar :url="viaLink ? shareLink : liveUrl" :title="meta?.title || ''" compact />
           <SqDivider />
           <div class="panel__tools">
             <SqBtn variant="tonal" size="small" :prepend-icon="icons.bot" href="https://t.me/WebpageBot" target="_blank" rel="noopener">Refresh via @WebpageBot</SqBtn>
@@ -154,6 +164,8 @@ async function copyBusted() {
 .panel__title .section-title { margin: 0; }
 .panel__url { display: flex; align-items: center; gap: 8px; font-size: 0.875rem; min-width: 0; }
 .panel__url a { color: var(--sq-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.via { font-size: 0.85rem; word-break: break-all; }
+.via a { color: var(--sq-primary); }
 .panel__tools { display: flex; flex-wrap: wrap; gap: 8px; }
 .score { display: flex; gap: 6px; }
 .checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }

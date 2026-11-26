@@ -1,10 +1,14 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { createHash } from 'node:crypto'
 import { readingTime } from '../src/lib/inline.js'
 
 export function loadContent(publicDir) {
   const dir = path.join(publicDir, 'content')
-  const site = JSON.parse(fs.readFileSync(path.join(dir, 'site.json'), 'utf8'))
+  const siteRaw = fs.readFileSync(path.join(dir, 'site.json'), 'utf8')
+  const site = JSON.parse(siteRaw)
+  // Public origin of syndica-link (the SSR share front). Env wins so CI can set it without a commit.
+  site.shareBaseUrl = (process.env.SHARE_BASE_URL || site.shareBaseUrl || '').replace(/\/+$/, '')
   const postsDir = path.join(dir, 'posts')
   const posts = fs
     .readdirSync(postsDir)
@@ -12,8 +16,9 @@ export function loadContent(publicDir) {
     .map((f) => {
       const file = path.join(postsDir, f)
       let post
+      const raw = fs.readFileSync(file, 'utf8')
       try {
-        post = JSON.parse(fs.readFileSync(file, 'utf8'))
+        post = JSON.parse(raw)
       } catch (e) {
         throw new Error(`[syndica] Invalid JSON in ${f}: ${e.message}`)
       }
@@ -29,6 +34,7 @@ export function loadContent(publicDir) {
         blocks: post.blocks || [],
         accent: post.accent || site.accent,
         readingTime: readingTime(post.blocks),
+        version: createHash('sha1').update(raw + siteRaw).digest('hex').slice(0, 10), // changes with the content
         image: post.cover || `/og/${slug}.png`,
         imageAlt: post.cover ? post.coverAlt || post.title : `${post.title} — ${site.name}`,
         generatedImage: !post.cover,

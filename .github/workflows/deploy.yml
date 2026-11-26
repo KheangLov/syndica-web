@@ -31,6 +31,8 @@ jobs:
           # Absolute URLs for og:url / og:image — follows a custom domain automatically.
           SITE_URL: ${{ steps.pages.outputs.base_url }}
           BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+          # Public URL of syndica-link (repo variable). When set, share buttons and canonical URLs point there.
+          SHARE_BASE_URL: ${{ vars.SHARE_BASE_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

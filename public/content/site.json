@@ -9,6 +9,7 @@
     "telegram": "kheanglov"
   },
   "telegramChannel": "",
+  "shareBaseUrl": "",
   "twitter": "",
   "accent": "#2AABEE",
   "defaultImage": "/og/default.png"
