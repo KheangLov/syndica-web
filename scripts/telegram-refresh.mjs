@@ -83,13 +83,16 @@ try {
   for (let i = 0; i < urls.length; i += 10) {
     const batch = urls.slice(i, i + 10)
     const sent = await client.sendMessage('WebpageBot', { message: batch.join('\n'), linkPreview: false })
-    let reply
-    for (let t = 0; t < 10 && !reply; t++) {
+    // @WebpageBot answers with one message per refreshed link (each carrying the new preview).
+    let replies = []
+    for (let t = 0; t < 8; t++) {
       await sleep(2000)
-      const [last] = await client.getMessages('WebpageBot', { limit: 1 })
-      if (last && last.id > sent.id) reply = last
+      replies = (await client.getMessages('WebpageBot', { limit: 20 })).filter((m) => m.id > sent.id && !m.out)
+      if (replies.length >= batch.length) break
     }
-    log(`@WebpageBot: ${reply?.message?.split('\n')[0] || '(no reply yet)'}`)
+    const withPreview = replies.filter((m) => m.media?.className === 'MessageMediaWebPage' && m.media.webpage?.className === 'WebPage')
+    log(`@WebpageBot replied ${replies.length}× — ${withPreview.length}/${batch.length} with a preview`)
+    for (const m of withPreview) log(`  ✓ ${m.media.webpage.url} — "${m.media.webpage.title || ''}"`)
     await sleep(1500)
   }
 } finally {
