@@ -1,0 +1,18 @@
+{
+  "title": "សាកល្បងការមើលជាមុន៖ តំណដែលធ្លាប់ 404",
+  "description": "តំណនេះធ្លាប់បង្ហាញ 404 មុនពេលអត្ថបទត្រូវបានបោះពុម្ព។ ឥឡូវនេះវាគួរតែបង្ហាញការមើលជាមុនពេញលេញនៅលើ Telegram។",
+  "date": "2026-11-26",
+  "lang": "km",
+  "tags": ["telegram", "khmer", "testing"],
+  "accent": "#8B5CF6",
+  "blocks": [
+    { "type": "p", "text": "អត្ថបទនេះត្រូវបានបង្កើតឡើងដើម្បីសាកល្បង **តំណដែលត្រូវបានចែករំលែកមុនពេលមានខ្លឹមសារ**។" },
+    { "type": "h2", "text": "របៀបសាកល្បង" },
+    { "type": "list", "ordered": true, "items": [
+      "បិទភ្ជាប់តំណ `/posts/khmer-preview-testing` ទៅក្នុង Telegram",
+      "ប្រសិនបើនៅតែគ្មានការមើលជាមុន សូមចែករំលែកតាមប៊ូតុង **Share on Telegram** ដែលប្រើតំណមានកំណែ",
+      "ឬផ្ញើតំណទៅ [@WebpageBot](https://t.me/WebpageBot) ដើម្បីធ្វើឱ្យទាន់សម័យ"
+    ] },
+    { "type": "callout", "tone": "info", "title": "Why this post exists", "text": "This URL returned 404 before it was published, so Telegram cached \"no preview\" for it. The versioned share link (`/posts/khmer-preview-testing/<version>`) is a new URL and shows the card straight away; the plain URL updates once @WebpageBot refreshes it." }
+  ]
+}
