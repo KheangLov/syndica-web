@@ -50,15 +50,11 @@ The file name is the slug. `cover`, `accent`, `lang`, `featured` and `draft` are
 
 ## Deploy
 
-Pushing to `main` deploys to GitHub Pages through `.github/workflows/deploy.yml`. Before the first deploy, go to **Settings → Pages → Source** and choose **GitHub Actions**. The workflow sets `SITE_URL` and `BASE_PATH` itself, so it keeps working if you add a custom domain.
+The site is deployed on **Vercel**: every push to `main` deploys. The build reads Vercel's `VERCEL_PROJECT_PRODUCTION_URL` automatically, so `og:url` and `og:image` are absolute without any setup. `vercel.json` keeps the URLs with trailing slashes.
 
-For any other host, build with the public URL:
+For a custom domain or another host, set `SITE_URL` (and `BASE_PATH` if the site is served from a sub-path). A GitHub Pages workflow is included for manual runs.
 
-```bash
-SITE_URL=https://blog.example.com BASE_PATH=/ npm run build
-```
-
-Without `SITE_URL`, the tags point at localhost and Telegram can't fetch them. The Share lab flags this.
+Share buttons point to [syndica-link](https://github.com/KheangLov/syndica-link) through `shareBaseUrl` in `public/content/site.json`, which defaults to `https://syndica-link.vercel.app`. The `SHARE_BASE_URL` environment variable overrides it.
 
 ## Testing on Telegram
 

@@ -161,8 +161,10 @@ export default function social() {
       publicDir = c.publicDir
       outDir = path.resolve(c.root, c.build.outDir)
       const fallback = isDev ? `http://localhost:${c.server.port || 5173}${base}` : `http://localhost:4173${base}`
-      siteUrl = (process.env.SITE_URL || fallback).replace(/\/+$/, '')
-      if (!isDev && !process.env.SITE_URL)
+      // On Vercel, use the project's production domain automatically (system env var).
+      const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL && `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}${base}`
+      siteUrl = (process.env.SITE_URL || vercel || fallback).replace(/\/+$/, '')
+      if (!isDev && !process.env.SITE_URL && !vercel)
         c.logger.warn('[syndica] SITE_URL is not set — og:url and og:image will point at localhost. Set SITE_URL for real share tests.')
     },
 
