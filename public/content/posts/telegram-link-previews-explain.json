@@ -1,0 +1,18 @@
+{
+  "title": "Telegram link previews, explained in 60 seconds",
+  "description": "The short version: what Telegram reads from a page, why it caches previews per URL, and how to get a fresh card every time.",
+  "date": "2026-11-26",
+  "tags": ["telegram", "open-graph"],
+  "accent": "#229ED9",
+  "blocks": [
+    { "type": "p", "text": "When you paste a link, Telegram's servers fetch the page once and build a card from its **Open Graph** tags: site name, title, description and image." },
+    { "type": "h2", "text": "Three things to know" },
+    { "type": "list", "ordered": true, "items": [
+      "**Bots don't run JavaScript.** The tags must be in the HTML the server sends — this site renders them on the server.",
+      "**Previews are cached per exact URL.** That includes a cached *no preview* if the link was shared before the page existed.",
+      "**A new URL means a fresh card.** Share buttons here use `/posts/<slug>/<version>`, which changes whenever the post does."
+    ] },
+    { "type": "callout", "tone": "info", "title": "Stale preview?", "text": "Send the link to [@WebpageBot](https://t.me/WebpageBot). This blog does that automatically after every publish once the Telegram secrets are set." },
+    { "type": "p", "text": "Want the long version? Read [How Telegram builds a link preview](/posts/telegram-link-previews-explained)." }
+  ]
+}
