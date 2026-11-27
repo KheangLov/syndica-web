@@ -54,7 +54,7 @@ The site is deployed on **Vercel**: every push to `main` deploys. The build read
 
 For a custom domain or another host, set `SITE_URL` (and `BASE_PATH` if the site is served from a sub-path). A GitHub Pages workflow is included for manual runs.
 
-Share buttons point to [syndica-link](https://github.com/KheangLov/syndica-link) through `shareBaseUrl` in `public/content/site.json`, which defaults to `https://syndica-link.vercel.app`. The `SHARE_BASE_URL` environment variable overrides it.
+Share buttons point to [syndica-link](https://github.com/KheangLov/syndica-link) through `shareBaseUrl` in `public/content/site.json`, which defaults to `https://syndica-link.vercel.app`. The `SHARE_BASE_URL` environment variable overrides it. Posts live only here: syndica-link serves each app its preview tags, and sends anyone who opens the link back to the post on this site. Canonical URLs always point here.
 
 ## Testing on Telegram
 

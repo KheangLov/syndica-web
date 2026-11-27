@@ -30,8 +30,9 @@ export default function social() {
     const title = post ? `${post.title} · ${site.name}` : route.title ? `${route.title} · ${site.name}` : `${site.name} — ${site.tagline}`
     const ogTitle = post ? post.title : route.title || site.name
     const description = post ? post.description : route.description || site.description
-    // With syndica-link configured, it is the canonical home of each post (one URL for SEO and shares).
-    const url = post && site.shareBaseUrl ? `${site.shareBaseUrl}/posts/${post.slug}` : abs(route.path)
+    // Posts live here, so this site is always canonical. (syndica-link is only the share link:
+    // it serves preview tags to apps and sends people back here.)
+    const url = abs(route.path)
     const image = post ? post.image : site.defaultImage
     const imageAlt = post ? post.imageAlt : `${site.name} — ${site.tagline}`
     const size = post && !post.generatedImage ? imageSize(path.join(publicDir, post.image)) : { width: 1200, height: 630, type: 'image/jpeg' }
