@@ -118,7 +118,7 @@ function reset() { query.value = ''; if (props.tag) tag.value = null }
 
 .featured { margin-bottom: 24px; }
 .result-count { margin: -8px 0 16px; font-size: 0.9rem; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; }
 .skeleton-card { padding: 12px; display: flex; flex-direction: column; gap: 16px; }
 
 .list-move, .list-enter-active, .list-leave-active { transition: all 0.3s var(--sq-ease, ease); }

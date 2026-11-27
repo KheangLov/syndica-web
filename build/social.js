@@ -9,6 +9,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { loadContent, summarize, imageSize } from './content.js'
 import { renderOgImage } from './og-image.js'
+import { renderPhotoCard } from './og-photo.js'
 import { escapeHtml as esc, inline } from '../src/lib/inline.js'
 
 const HEAD = '<!--social:head-->'
@@ -36,11 +37,10 @@ export default function social() {
     // Posts live here, so this site is always canonical. (syndica-link is only the share link:
     // it serves preview tags to apps and sends people back here.)
     const url = abs(route.path)
-    const image = post ? shared.image || post.image : site.defaultImage
+    // A cover (or studio image) of any shape/format is re-made as /og/<slug>.jpg at 1200×630, under 300 KB.
+    const image = post ? `/og/${post.slug}.jpg` : site.defaultImage
     const imageAlt = post ? (shared.image ? ogTitle : post.imageAlt) : `${site.name} — ${site.tagline}`
-    const size = post && (shared.image || !post.generatedImage)
-      ? (/^https?:/.test(image) ? null : imageSize(path.join(publicDir, image)))
-      : { width: 1200, height: 630, type: 'image/jpeg' }
+    const size = { width: 1200, height: 630, type: 'image/jpeg' }
 
     const m = (attr, key, val) => (val ? `<meta ${attr}="${key}" content="${esc(val)}">` : '')
     const tags = [
@@ -143,6 +143,11 @@ export default function social() {
     const post = posts.find((p) => p.slug === name)
     if (!post) return null
     const shared = post.share?.default || {}
+    const cover = shared.image || post.cover
+    if (cover) {
+      try { return await renderPhotoCard(cover, publicDir, 1200, 630, shared.accent || post.accent) }
+      catch (e) { console.warn(`[syndica] ${post.slug}: cover can't be used in share images (${e.message}); using the drawn card`) }
+    }
     return renderOgImage({ title: shared.title || post.title, eyebrow: fmtDate(post.date), tags: post.tags, accent: shared.accent || post.accent, site: site.name, domain })
   }
 

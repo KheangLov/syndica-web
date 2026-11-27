@@ -119,7 +119,9 @@ const related = computed(() => {
   background: linear-gradient(135deg, color-mix(in srgb, var(--tg) 9%, var(--sq-surface)), var(--sq-surface) 60%); }
 .share-box__text p { margin: 0; }
 .share-box__text .section-title { margin-bottom: 4px; }
-.share-box__lab { align-self: flex-start; margin-left: -8px; }
+.share-box__lab { align-self: flex-start; margin-left: -8px; max-width: calc(100% + 8px); height: auto; min-height: 32px; }
+.share-box__lab :deep(.sq-btn__content) { white-space: normal; text-align: left; }
+@media (max-width: 380px) { .share-box { padding: 16px; } }
 .related { max-width: 960px; margin: 72px auto 0; }
-.related__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.related__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; }
 </style>
