@@ -66,6 +66,19 @@ for (const slug of live) {
 if (!urls.length) { log('Nothing is live yet; no URLs to refresh.'); process.exit(0) }
 log(`URLs to refresh (${urls.length}):\n  ${urls.join('\n  ')}`)
 
+// 3. Pre-fetch each share image the way Facebook/Messenger, WhatsApp and Telegram request it,
+//    so Vercel's CDN serves them instantly (those apps drop images that load slowly).
+const AGENTS = ['facebookexternalhit/1.1', 'WhatsApp/2.24.1.6 A', 'TelegramBot (like TwitterBot)']
+for (const slug of live) {
+  for (const ua of AGENTS) {
+    try {
+      const html = await (await fetch(`${LINK}/posts/${slug}`, { headers: { 'User-Agent': ua } })).text()
+      const img = html.match(/property="og:image" content="([^"]+)"/)?.[1]
+      if (img) { const r = await fetch(img, { headers: { 'User-Agent': ua } }); await r.arrayBuffer(); log(`warmed ${img.split('/og/')[1] || img} (${r.status})`) }
+    } catch (e) { log(`warm failed for ${slug}: ${e.message}`) }
+  }
+}
+
 if (process.env.DRY_RUN) process.exit(0)
 const { TELEGRAM_API_ID, TELEGRAM_API_HASH, TELEGRAM_SESSION } = process.env
 if (!TELEGRAM_API_ID || !TELEGRAM_API_HASH || !TELEGRAM_SESSION) {
@@ -73,7 +86,7 @@ if (!TELEGRAM_API_ID || !TELEGRAM_API_HASH || !TELEGRAM_SESSION) {
   process.exit(0)
 }
 
-// 3. Send them to @WebpageBot (max 10 links per message).
+// 4. Send them to @WebpageBot (max 10 links per message).
 const { TelegramClient } = await import('telegram')
 const { StringSession } = await import('telegram/sessions/index.js')
 const client = new TelegramClient(new StringSession(TELEGRAM_SESSION), Number(TELEGRAM_API_ID), TELEGRAM_API_HASH, { connectionRetries: 3 })
