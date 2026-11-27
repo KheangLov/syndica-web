@@ -27,14 +27,13 @@ export const getSite = () => getJson('content/site.json')
 export const getPosts = () => getJson('content/posts.json').then((d) => d.posts)
 
 /**
- * The link to share for a post. When syndica-link is configured, share its server-rendered
- * page with its content version in the path — an edited post gets a new URL, so Telegram always
- * fetches a fresh preview instead of showing its cached one.
+ * The link to share for a post: syndica-link's server-rendered page when configured (it serves
+ * each app the right preview), otherwise this site's own page. Plain URL, no version — previews
+ * are refreshed automatically after each publish.
  */
 export async function shareUrlFor(post) {
   const { shareBaseUrl } = await getJson('content/posts.json')
-  // Version in the path (no query string): /posts/<slug>/<version>
-  return shareBaseUrl ? `${shareBaseUrl}/posts/${post.slug}/${post.version}` : pageUrl(`posts/${post.slug}/`)
+  return shareBaseUrl ? `${shareBaseUrl}/posts/${post.slug}` : pageUrl(`posts/${post.slug}/`)
 }
 
 /** Full post (with blocks), merged with the computed fields from the index. */

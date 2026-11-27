@@ -90,7 +90,7 @@ async function copyShare() {
             <a :href="liveUrl" target="_blank" rel="noopener">{{ liveUrl }}</a>
           </div>
           <SqAlert v-if="viaLink" type="info" variant="tonal" class="via">
-            Share buttons use the always-fresh syndica-link URL:
+            Share buttons use the syndica-link page:
             <a :href="shareLink" target="_blank" rel="noopener">{{ shareLink }}</a>
           </SqAlert>
           <ShareBar :url="viaLink ? shareLink : liveUrl" :title="meta?.title || ''" compact />

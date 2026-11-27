@@ -11,7 +11,8 @@
 //         LINK_URL  (default https://syndica-link.vercel.app)
 //         WEB_URL   (default https://syndica-web.vercel.app)
 //         LINK_REVALIDATE_SECRET  optional — makes syndica-link reload content immediately
-//         DRY_RUN=1 to print the URLs without contacting Telegram
+//         FB_APP_ID, FB_APP_SECRET  optional — also make Facebook/Messenger re-scrape the URLs
+//         DRY_RUN=1 to print the URLs without contacting Telegram or Facebook
 
 import fs from 'node:fs'
 
@@ -80,13 +81,31 @@ for (const slug of live) {
 }
 
 if (process.env.DRY_RUN) process.exit(0)
+
+// 4. Facebook + Messenger: ask the Graph API to re-scrape each URL (same as "Scrape Again"
+//    in the Sharing Debugger). Needs a Facebook app: FB_APP_ID / FB_APP_SECRET.
+if (process.env.FB_APP_ID && process.env.FB_APP_SECRET) {
+  const token = `${process.env.FB_APP_ID}|${process.env.FB_APP_SECRET}`
+  for (const url of urls) {
+    try {
+      const r = await fetch('https://graph.facebook.com/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ id: url, scrape: 'true', access_token: token }),
+      })
+      const j = await r.json()
+      log(r.ok ? `Facebook re-scraped ${url} → "${j.title || ''}"${j.image?.[0]?.url ? ' (with image)' : ''}` : `Facebook re-scrape failed for ${url}: ${j.error?.message || r.status}`)
+    } catch (e) { log(`Facebook re-scrape failed for ${url}: ${e.message}`) }
+  }
+} else log('FB_APP_ID / FB_APP_SECRET not set — skipping the Facebook re-scrape.')
+
 const { TELEGRAM_API_ID, TELEGRAM_API_HASH, TELEGRAM_SESSION } = process.env
 if (!TELEGRAM_API_ID || !TELEGRAM_API_HASH || !TELEGRAM_SESSION) {
   log('TELEGRAM_API_ID / TELEGRAM_API_HASH / TELEGRAM_SESSION not set — skipping the @WebpageBot refresh.')
   process.exit(0)
 }
 
-// 4. Send them to @WebpageBot (max 10 links per message).
+// 5. Send them to @WebpageBot (max 10 links per message).
 const { TelegramClient } = await import('telegram')
 const { StringSession } = await import('telegram/sessions/index.js')
 const client = new TelegramClient(new StringSession(TELEGRAM_SESSION), Number(TELEGRAM_API_ID), TELEGRAM_API_HASH, { connectionRetries: 3 })

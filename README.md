@@ -59,7 +59,7 @@ Share buttons point to [syndica-link](https://github.com/KheangLov/syndica-link)
 ## Testing on Telegram
 
 1. Open a post and tap **Share on Telegram**, or paste its URL into any chat.
-2. With `SHARE_BASE_URL` set (see syndica-link), share buttons hand out `/posts/<slug>/<version>` links. The version changes whenever a post changes, so Telegram always fetches a fresh preview. Without it, send the URL to [@WebpageBot](https://t.me/WebpageBot) to refresh Telegram's cache.
+2. Share buttons hand out plain syndica-link URLs (`/posts/<slug>`). After each publish the workflow below refreshes Telegram's and Facebook's cached previews. To refresh by hand, send the URL to [@WebpageBot](https://t.me/WebpageBot), or use Facebook's Sharing Debugger → Scrape Again.
 
 ## Automatic Telegram refresh
 
@@ -78,3 +78,10 @@ One-time setup:
 4. Optional: add `LINK_REVALIDATE_SECRET`, the same value as syndica-link's `NUXT_REVALIDATE_SECRET`, so syndica-link reloads immediately instead of within 60 seconds.
 
 Without the secrets, the workflow still runs and just skips the Telegram step. You can also run it by hand from the Actions tab for any slugs. @WebpageBot is a best-effort service: it usually works, but Telegram's bug tracker has reports of it saying "updated" without refetching.
+
+### Facebook and Messenger refresh (optional)
+
+Add two more secrets and the same workflow also tells Facebook to re-scrape each URL. Messenger uses Facebook's cached preview, so this covers it too.
+1. At [developers.facebook.com/apps](https://developers.facebook.com/apps), tap **Create app**. Pick **Other** then **Business** (or "None"), and give it any name.
+2. In the app, open **App settings → Basic**. Copy the **App ID**, and the **App secret** (tap **Show**).
+3. Add them as the GitHub secrets `FB_APP_ID` and `FB_APP_SECRET`.
