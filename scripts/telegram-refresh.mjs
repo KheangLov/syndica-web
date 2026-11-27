@@ -45,10 +45,18 @@ async function waitFor(url, title, timeoutMs = 4 * 60_000) {
   return false
 }
 
-// 1. Ask syndica-link to reload content now (if a secret is configured).
+// 1. Preferred: hand the whole refresh to syndica-link's backend. It reloads the content, waits
+//    until the live share link serves the new version to every app, then warms images and
+//    refreshes Telegram and Facebook/Messenger. Nothing else to do here.
 if (process.env.LINK_REVALIDATE_SECRET) {
-  const r = await fetch(`${LINK}/api/revalidate`, { method: 'POST', headers: { Authorization: `Bearer ${process.env.LINK_REVALIDATE_SECRET}` } }).catch((e) => ({ ok: false, status: e.message }))
-  log('syndica-link revalidate:', r.status)
+  const r = await fetch(`${LINK}/api/revalidate`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${process.env.LINK_REVALIDATE_SECRET}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ slugs: live }),
+  }).catch((e) => ({ ok: false, status: e.message, text: async () => '' }))
+  log('syndica-link refresh:', r.status, await r.text())
+  if (r.ok) process.exit(0)
+  log('backend refresh failed; falling back to refreshing from here')
 }
 
 // 2. Wait until both sites serve the new content (syndica-web needs its Vercel deploy to finish).

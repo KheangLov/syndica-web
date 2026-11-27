@@ -27,15 +27,20 @@ export default function social() {
   // ---------- <head> tags ----------
   function headFor(route, { site, posts }) {
     const post = route.post
+    // Share-studio "All apps" settings (post.share.default) apply here too: this page is static,
+    // so it can't vary per app, but its title, description and image follow the studio.
+    const shared = post?.share?.default || {}
     const title = post ? `${post.title} · ${site.name}` : route.title ? `${route.title} · ${site.name}` : `${site.name} — ${site.tagline}`
-    const ogTitle = post ? post.title : route.title || site.name
-    const description = post ? post.description : route.description || site.description
+    const ogTitle = post ? shared.title || post.title : route.title || site.name
+    const description = post ? shared.description || post.description : route.description || site.description
     // Posts live here, so this site is always canonical. (syndica-link is only the share link:
     // it serves preview tags to apps and sends people back here.)
     const url = abs(route.path)
-    const image = post ? post.image : site.defaultImage
-    const imageAlt = post ? post.imageAlt : `${site.name} — ${site.tagline}`
-    const size = post && !post.generatedImage ? imageSize(path.join(publicDir, post.image)) : { width: 1200, height: 630, type: 'image/jpeg' }
+    const image = post ? shared.image || post.image : site.defaultImage
+    const imageAlt = post ? (shared.image ? ogTitle : post.imageAlt) : `${site.name} — ${site.tagline}`
+    const size = post && (shared.image || !post.generatedImage)
+      ? (/^https?:/.test(image) ? null : imageSize(path.join(publicDir, image)))
+      : { width: 1200, height: 630, type: 'image/jpeg' }
 
     const m = (attr, key, val) => (val ? `<meta ${attr}="${key}" content="${esc(val)}">` : '')
     const tags = [
@@ -137,7 +142,8 @@ export default function social() {
     if (name === 'default') return renderOgImage({ title: site.tagline, site: site.name, domain, accent: site.accent, tags: [] })
     const post = posts.find((p) => p.slug === name)
     if (!post) return null
-    return renderOgImage({ title: post.title, eyebrow: fmtDate(post.date), tags: post.tags, accent: post.accent, site: site.name, domain })
+    const shared = post.share?.default || {}
+    return renderOgImage({ title: shared.title || post.title, eyebrow: fmtDate(post.date), tags: post.tags, accent: shared.accent || post.accent, site: site.name, domain })
   }
 
   function feed({ site, posts }) {
