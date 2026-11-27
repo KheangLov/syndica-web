@@ -35,7 +35,7 @@ export function loadContent(publicDir) {
         accent: post.accent || site.accent,
         readingTime: readingTime(post.blocks),
         version: createHash('sha1').update(raw + siteRaw).digest('hex').slice(0, 10), // changes with the content
-        image: post.cover || `/og/${slug}.png`,
+        image: post.cover || `/og/${slug}.jpg`,
         imageAlt: post.cover ? post.coverAlt || post.title : `${post.title} — ${site.name}`,
         generatedImage: !post.cover,
       }

@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
+import jpeg from 'jpeg-js'
 
 const require = createRequire(import.meta.url)
 const font = (pkg, file) => fs.readFileSync(require.resolve(`${pkg}/files/${file}`))
@@ -65,5 +66,7 @@ export async function renderOgImage(o) {
   )
 
   const svg = await satori(tree, { width: 1200, height: 630, fonts: loadFonts() })
-  return new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng()
+  const img = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 }, background: '#0B1220' }).render()
+  // JPEG keeps the card small — WhatsApp silently drops large preview images.
+  return jpeg.encode({ data: img.pixels, width: img.width, height: img.height }, 86).data
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject } from 'vue'
+import { computed, inject, onMounted, ref } from 'vue'
 import { icons } from '../lib/icons.js'
 import { canNativeShare, copyText, shareTargets } from '../lib/share.js'
 
@@ -11,7 +11,9 @@ const props = defineProps({
 const toast = inject('toast', () => {})
 const targets = computed(() => shareTargets(props.url, props.title))
 const telegram = computed(() => targets.value[0])
-const others = computed(() => targets.value.slice(1))
+const isTouch = ref(false)
+onMounted(() => { isTouch.value = matchMedia('(pointer: coarse)').matches })
+const others = computed(() => targets.value.slice(1).filter((t) => !t.mobileOnly || isTouch.value))
 const nativeShare = canNativeShare()
 
 async function copy() {

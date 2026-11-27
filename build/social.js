@@ -34,7 +34,7 @@ export default function social() {
     const url = post && site.shareBaseUrl ? `${site.shareBaseUrl}/posts/${post.slug}` : abs(route.path)
     const image = post ? post.image : site.defaultImage
     const imageAlt = post ? post.imageAlt : `${site.name} — ${site.tagline}`
-    const size = post && !post.generatedImage ? imageSize(path.join(publicDir, post.image)) : { width: 1200, height: 630, type: 'image/png' }
+    const size = post && !post.generatedImage ? imageSize(path.join(publicDir, post.image)) : { width: 1200, height: 630, type: 'image/jpeg' }
 
     const m = (attr, key, val) => (val ? `<meta ${attr}="${key}" content="${esc(val)}">` : '')
     const tags = [
@@ -141,7 +141,7 @@ export default function social() {
 
   function feed({ site, posts }) {
     const items = posts
-      .map((p) => `<item><title>${esc(p.title)}</title><link>${esc(abs(`posts/${p.slug}/`))}</link><guid>${esc(abs(`posts/${p.slug}/`))}</guid><pubDate>${new Date(p.date + 'T00:00:00Z').toUTCString()}</pubDate><description>${esc(p.description)}</description>${p.tags.map((t) => `<category>${esc(t)}</category>`).join('')}<enclosure url="${esc(abs(p.image))}" type="image/png" length="0"/></item>`)
+      .map((p) => `<item><title>${esc(p.title)}</title><link>${esc(abs(`posts/${p.slug}/`))}</link><guid>${esc(abs(`posts/${p.slug}/`))}</guid><pubDate>${new Date(p.date + 'T00:00:00Z').toUTCString()}</pubDate><description>${esc(p.description)}</description>${p.tags.map((t) => `<category>${esc(t)}</category>`).join('')}<enclosure url="${esc(abs(p.image))}" type="${p.generatedImage ? 'image/jpeg' : 'image/png'}" length="0"/></item>`)
       .join('')
     return `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${esc(site.name)}</title><link>${esc(abs(''))}</link><description>${esc(site.description)}</description>${items}</channel></rss>`
   }
@@ -187,12 +187,12 @@ export default function social() {
           }
           if (rel === 'feed.xml') { res.setHeader('Content-Type', 'application/rss+xml'); return res.end(feed(content())) }
           if (rel === 'sitemap.xml') { res.setHeader('Content-Type', 'application/xml'); return res.end(sitemap(content())) }
-          const og = rel.match(/^og\/([^/]+)\.png$/)
+          const og = rel.match(/^og\/([^/]+)\.(?:png|jpg)$/)
           if (og) {
             const png = imageCache.get(og[1]) ?? (await ogImage(og[1], content()))
             if (!png) return next()
             imageCache.set(og[1], png)
-            res.setHeader('Content-Type', 'image/png')
+            res.setHeader('Content-Type', 'image/jpeg')
             return res.end(png)
           }
         } catch (e) {
@@ -236,8 +236,8 @@ export default function social() {
       write('feed.xml', feed(data))
       write('sitemap.xml', sitemap(data))
       write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${abs('sitemap.xml')}\n`)
-      write('og/default.png', await ogImage('default', data))
-      for (const post of data.posts) write(`og/${post.slug}.png`, await ogImage(post.slug, data))
+      write('og/default.jpg', await ogImage('default', data))
+      for (const post of data.posts) write(`og/${post.slug}.jpg`, await ogImage(post.slug, data))
 
       cfg.logger.info(`\n[syndica] prerendered ${data.posts.length} posts + share images for ${siteUrl}`)
     },

@@ -6,6 +6,8 @@ export const shareTargets = (url, text = '') => [
   { id: 'x', label: 'X', icon: 'x', color: '#111111', href: `https://x.com/intent/post?url=${enc(url)}&text=${enc(text)}` },
   { id: 'facebook', label: 'Facebook', icon: 'facebook', color: '#1877F2', href: `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}` },
   { id: 'linkedin', label: 'LinkedIn', icon: 'linkedin', color: '#0A66C2', href: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}` },
+  // Messenger has no web share URL without a Facebook app ID; this deep link opens the Messenger app on phones.
+  { id: 'messenger', label: 'Messenger', icon: 'messenger', color: '#0084FF', href: `fb-messenger://share/?link=${enc(url)}`, mobileOnly: true },
   { id: 'whatsapp', label: 'WhatsApp', icon: 'whatsapp', color: '#25D366', href: `https://wa.me/?text=${enc(text ? `${text} ${url}` : url)}` },
 ]
 
