@@ -6,7 +6,7 @@ name: Refresh Telegram previews
 on:
   push:
     branches: [main]
-    paths: ['public/content/**']
+    paths: ['public/content/**', 'build/og-image.js']
   workflow_dispatch:
     inputs:
       slugs:
@@ -39,8 +39,8 @@ jobs:
             slugs=$(echo "$INPUT_SLUGS" | tr -cd 'a-z0-9_ -')
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             slugs=$(ls public/content/posts/*.json | xargs -n1 basename | sed 's/\.json$//' | tr '\n' ' ')
-          elif git diff --name-only HEAD~1 HEAD -- public/content/site.json | grep -q .; then
-            # Site-wide change (name, branding): every card changes.
+          elif git diff --name-only HEAD~1 HEAD -- public/content/site.json build/og-image.js | grep -q .; then
+            # Site-wide change (name, branding, card design): every card changes.
             slugs=$(ls public/content/posts/*.json | xargs -n1 basename | sed 's/\.json$//' | tr '\n' ' ')
           else
             slugs=$(git diff --name-only --diff-filter=AMR HEAD~1 HEAD -- 'public/content/posts/*.json' | xargs -rn1 basename | sed 's/\.json$//' | grep -v '^_' | tr '\n' ' ')

@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { readingTime } from '../src/lib/inline.js'
+import { OG_DESIGN } from './og-image.js'
 
 export function loadContent(publicDir) {
   const dir = path.join(publicDir, 'content')
@@ -34,7 +35,7 @@ export function loadContent(publicDir) {
         blocks: post.blocks || [],
         accent: post.accent || site.accent,
         readingTime: readingTime(post.blocks),
-        version: createHash('sha1').update(raw + siteRaw).digest('hex').slice(0, 10), // changes with the content
+        version: createHash('sha1').update(raw + siteRaw + OG_DESIGN).digest('hex').slice(0, 10), // changes with the content or card design
         image: post.cover || `/og/${slug}.jpg`,
         imageAlt: post.cover ? post.coverAlt || post.title : `${post.title} — ${site.name}`,
         generatedImage: !post.cover,
