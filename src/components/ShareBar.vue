@@ -13,7 +13,10 @@ const targets = computed(() => shareTargets(props.url, props.title))
 const telegram = computed(() => targets.value[0])
 const isTouch = ref(false)
 onMounted(() => { isTouch.value = matchMedia('(pointer: coarse)').matches })
-const others = computed(() => targets.value.slice(1).filter((t) => !t.mobileOnly || isTouch.value))
+const fits = (t) => (!t.mobileOnly || isTouch.value) && (!t.desktopOnly || !isTouch.value)
+const others = computed(() => targets.value.slice(1).filter((t) => !t.more && fits(t)))
+const more = computed(() => targets.value.filter((t) => t.more && fits(t)))
+const showMore = ref(false)
 const nativeShare = canNativeShare()
 
 async function copy() {
@@ -37,16 +40,24 @@ async function share() {
     >
       Share on Telegram
     </SqBtn>
+    <!-- Phones: the system share sheet reaches every installed app (iMessage, Signal, LINE, Zalo…). -->
+    <SqBtn v-if="nativeShare && isTouch" variant="tonal" rounded="pill" :prepend-icon="icons.share" @click="share">Share…</SqBtn>
     <div class="share__others">
       <SqTooltip v-for="t in others" :key="t.id" :text="t.label">
-        <SqBtn :href="t.href" target="_blank" rel="noopener" variant="tonal" :icon="icons[t.icon]" :aria-label="`Share on ${t.label}`" />
+        <SqBtn :href="t.href" :target="t.href.startsWith('http') ? '_blank' : undefined" rel="noopener" variant="tonal" :icon="icons[t.icon]" :aria-label="`Share on ${t.label}`" />
       </SqTooltip>
       <SqTooltip text="Copy link">
         <SqBtn variant="tonal" :icon="icons.link" aria-label="Copy link" @click="copy" />
       </SqTooltip>
-      <SqTooltip v-if="nativeShare" text="More…">
+      <SqTooltip v-if="nativeShare && !isTouch" text="Share via device">
         <SqBtn variant="tonal" :icon="icons.share" aria-label="Share via device" @click="share" />
       </SqTooltip>
+      <SqBtn v-if="more.length" variant="text" size="small" class="share__more-toggle" :aria-expanded="showMore" @click="showMore = !showMore">
+        {{ showMore ? 'Fewer' : 'More apps' }}
+      </SqBtn>
+    </div>
+    <div v-if="showMore" class="share__more">
+      <SqBtn v-for="t in more" :key="t.id" :href="t.href" :target="t.href.startsWith('http') ? '_blank' : undefined" rel="noopener" variant="tonal" size="small" rounded="pill">{{ t.label }}</SqBtn>
     </div>
   </div>
 </template>
@@ -54,5 +65,6 @@ async function share() {
 <style scoped>
 .share { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .share__tg { font-weight: 600; }
-.share__others { display: flex; gap: 6px; flex-wrap: wrap; }
+.share__others { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.share__more { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; }
 </style>
